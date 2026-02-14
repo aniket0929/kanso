@@ -1,0 +1,439 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Change to "postgresql" for production
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// WORKSPACE & USERS
+// ============================================
+
+model Workspace {
+  id        String   @id @default(cuid())
+  clerkOrgId String  @unique
+
+  // Basic info
+  name      String
+  slug      String   @unique // For public URLs
+  address   String?
+  timezone  String   @default("UTC")
+  contactEmail String
+
+  // Branding (optional)
+  logoUrl   String?
+  primaryColor String?
+
+  // Onboarding state
+  isActive       Boolean @default(false)
+  onboardingStep Int     @default(0) // 0-8 (8 = complete)
+
+  // Integration configs (stored as JSON)
+  emailConfig String? // { provider: "resend", apiKey: "...", from: "..." }
+  smsConfig   String? // { provider: "twilio", accountSid: "...", ... }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  staff          StaffProfile[]
+  services       Service[]
+  bookings       Booking[]
+  contacts       Contact[]
+  conversations  Conversation[]
+  resources      Resource[]
+  forms          Form[]
+  automationRules AutomationRule[]
+  automationLogs AutomationLog[]
+  alerts         Alert[]
+}
+
+model StaffProfile {
+  id           String   @id @default(cuid())
+  clerkUserId  String   @unique
+  workspaceId  String
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Profile
+  email String
+  name  String
+  role  String // "owner" or "staff"
+
+  // Permissions (for staff role)
+  canManageBookings Boolean @default(true)
+  canAccessInbox    Boolean @default(true)
+  canViewInventory  Boolean @default(true)
+  canManageSettings Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId])
+  @@index([clerkUserId])
+}
+
+// ============================================
+// SERVICES & BOOKINGS
+// ============================================
+
+model Service {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  duration    Int       // minutes
+  bufferTime  Int       @default(0) // minutes
+  isActive    Boolean   @default(true)
+
+  // Location (In-person)
+  address             String?
+  arrivalInstructions String?
+
+  // Availability
+  availableDays      String    @default("[\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\"]")
+  timeSlots          String    @default("[{\"start\":\"09:00\",\"end\":\"17:00\"}]")
+  maxBookingsPerDay  Int?
+
+  // Resource requirements
+  requiresResources Boolean @default(false)
+  resourceIds       String?   // JSON array of resource IDs
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bookings Booking[]
+  forms    FormServiceLink[]
+
+  @@index([workspaceId])
+}
+
+model Booking {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id])
+
+  // Scheduling
+  scheduledAt DateTime
+  duration    Int      // minutes (copied from service)
+
+  // Status tracking
+  status          String    @default("pending") // pending, confirmed, completed, no_show, cancelled
+  statusChangedAt DateTime?
+
+  // Form completion tracking
+  followUpFormSent Boolean   @default(false)
+  formsRequired    Boolean   @default(false)
+  formsCompleted   Boolean   @default(false)
+  formsSentAt      DateTime?
+
+  // Notes
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  resourceUsage    ResourceUsage[]
+  formSubmissions  FormSubmission[]
+
+  @@index([workspaceId, scheduledAt])
+  @@index([contactId])
+  @@index([status])
+}
+
+// ============================================
+// CONTACTS & CONVERSATIONS
+// ============================================
+
+model Contact {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Contact info
+  name  String
+  email String?
+  phone String?
+
+  // Metadata
+  source String? // "contact_form", "booking", "manual"
+  tags   String?   // ["vip", "new"]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bookings        Booking[]
+  conversations   Conversation[]
+  formSubmissions FormSubmission[]
+
+  @@index([workspaceId, email])
+  @@index([workspaceId, phone])
+}
+
+model Conversation {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  // Status
+  status        String   @default("active") // active, archived
+  subject       String?
+  unreadCount   Int      @default(0)
+  lastMessageAt DateTime @default(now())
+
+  // Automation control
+  automationPaused Boolean   @default(false)
+  pausedAt         DateTime?
+  pausedBy         String?   // Staff user ID who replied
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  messages Message[]
+
+  @@index([workspaceId, contactId])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  // Message content
+  content   String
+  channel   String // "email", "sms", "system"
+  direction String // "inbound", "outbound"
+
+  // Sender info
+  senderType String  // "contact", "staff", "system"
+  senderId   String? // Staff user ID or "system"
+  senderName String?
+
+  // Delivery tracking
+  status      String    @default("sent") // sent, delivered, failed
+  deliveredAt DateTime?
+  failedReason String?
+
+  // Automation flag
+  isAutomated      Boolean @default(false)
+  automationRuleId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// ============================================
+// FORMS & SUBMISSIONS
+// ============================================
+
+model Form {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Form structure (JSON for flexibility)
+  fields String // [{ id, type, label, required, options }]
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  services    FormServiceLink[]
+  submissions FormSubmission[]
+
+  @@index([workspaceId])
+}
+
+model FormServiceLink {
+  id        String  @id @default(cuid())
+  formId    String
+  form      Form    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, serviceId])
+}
+
+model FormSubmission {
+  id        String  @id @default(cuid())
+  formId    String
+  form      Form    @relation(fields: [formId], references: [id])
+
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  bookingId String?
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+
+  // Submission data
+  data String // { field_id: value }
+
+  // Status
+  status      String    @default("pending") // pending, completed
+  completedAt DateTime?
+
+  // Reminders
+  reminderSentAt DateTime?
+  reminderCount  Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId])
+  @@index([bookingId])
+  @@index([status])
+}
+
+// ============================================
+// INVENTORY & RESOURCES
+// ============================================
+
+model Resource {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Stock tracking
+  currentStock      Int    @default(0)
+  lowStockThreshold Int    @default(5)
+  unit              String @default("units") // units, hours, etc.
+  expiryDate        DateTime?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  usage ResourceUsage[]
+
+  @@index([workspaceId])
+}
+
+model ResourceUsage {
+  id         String   @id @default(cuid())
+  resourceId String
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  quantity Int // Amount used
+
+  createdAt DateTime @default(now())
+
+  @@index([resourceId])
+  @@index([bookingId])
+}
+
+// ============================================
+// AUTOMATION & ALERTS
+// ============================================
+
+model AutomationRule {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Trigger
+  trigger String // "booking_created", "booking_reminder", "form_pending", "low_inventory"
+
+  // Action
+  action String // "send_email", "send_sms", "create_alert"
+
+  // Configuration (JSON for flexibility)
+  config String // { template, delay, conditions }
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  logs AutomationLog[]
+
+  @@index([workspaceId, trigger])
+}
+
+model AutomationLog {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  ruleId String?
+  rule   AutomationRule? @relation(fields: [ruleId], references: [id])
+
+  // Event details
+  trigger String
+  action  String
+
+  // Execution
+  status String  // "success", "failed", "skipped"
+  error  String?
+
+  // Context
+  metadata String? // { bookingId, contactId, etc. }
+
+  executedAt DateTime @default(now())
+
+  @@index([workspaceId, executedAt])
+  @@index([status])
+}
+
+model Alert {
+  id          String    @id @default(cuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Alert details
+  type     String // "missed_message", "low_inventory", "overdue_form", "unconfirmed_booking"
+  severity String // "info", "warning", "critical"
+
+  title   String
+  message String
+
+  // Action link
+  linkTo    String? // Deep link to relevant page
+  linkLabel String?
+
+  // Status
+  isResolved Boolean   @default(false)
+  resolvedAt DateTime?
+  resolvedBy String?   // Staff user ID
+
+  createdAt DateTime @default(now())
+
+  @@index([workspaceId, isResolved, createdAt])
+  @@index([type])
+}
