@@ -1,6 +1,6 @@
 # Kanso — Clinical Operations Platform
 
-Kanso is a modern, full-stack clinical operations platform that helps healthcare practices and service-based businesses manage bookings, patient intake, communication, and resource tracking — all from a single, beautiful dashboard.
+Kanso is a modern, full-stack clinical operations platform that helps  service-based businesses manage bookings, contact form intake, communication, and resource tracking — all from a single, beautiful dashboard.
 
 Built with a "Zen" design philosophy: minimal friction, maximum clarity.
 
@@ -28,11 +28,11 @@ No manual follow-ups. No missed leads.
 Customer visits public booking page →
   Selects service, date & time →
     Submits booking with contact info →
-      ✅ Booking created in database
-      📧 Confirmation email sent to customer (via Gmail SMTP)
-      📧 Notification email sent to business owner
-      📧 Intake form link sent to customer
-      📱 SMS confirmation sent (if Twilio configured)
+       Booking created in database
+       Confirmation email sent to customer (via Gmail SMTP)
+       Notification email sent to business owner
+       Intake form link sent to customer
+       SMS confirmation sent (if Twilio configured)
 ```
 
 ### Contact Form Flow
@@ -40,7 +40,7 @@ Customer visits public booking page →
 Customer submits contact form →
   Contact record created →
     Message logged in shared inbox →
-      📧 "We received your message" email sent to customer
+       "We received your message" email sent to customer
 ```
 
 ### Business Owner Journey
