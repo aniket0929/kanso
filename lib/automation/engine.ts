@@ -20,20 +20,24 @@ export class AutomationEngine {
     async trigger(event: string, payload: any) {
         console.log(`[Automation Engine] Triggered: ${event}`, payload);
 
-        // Hardcoded rules for prototype (Strategy Pattern would be better for complex apps)
-        switch (event) {
-            case AUTOMATION_EVENTS.BOOKING_CREATED:
-                await this.handleBookingCreated(payload);
-                break;
-            case AUTOMATION_EVENTS.FORM_SUBMITTED:
-                await this.handleFormSubmitted(payload);
-                break;
-            case AUTOMATION_EVENTS.INVENTORY_LOW:
-                await this.handleInventoryLow(payload);
-                break;
-            case AUTOMATION_EVENTS.INCOMING_MESSAGE:
-                await this.handleIncomingMessage(payload);
-                break;
+        try {
+            switch (event) {
+                case AUTOMATION_EVENTS.BOOKING_CREATED:
+                    await this.handleBookingCreated(payload);
+                    break;
+                case AUTOMATION_EVENTS.FORM_SUBMITTED:
+                    await this.handleFormSubmitted(payload);
+                    break;
+                case AUTOMATION_EVENTS.INVENTORY_LOW:
+                    await this.handleInventoryLow(payload);
+                    break;
+                case AUTOMATION_EVENTS.INCOMING_MESSAGE:
+                    await this.handleIncomingMessage(payload);
+                    break;
+            }
+        } catch (error) {
+            console.error(`[Automation Engine] ❌ Error handling event "${event}":`, error);
+            // Don't re-throw — the booking/form should still succeed even if email fails
         }
     }
 

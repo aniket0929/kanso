@@ -23,7 +23,7 @@ export class CommunicationService {
     private async getConfigs() {
         const workspace = await db.workspace.findUnique({
             where: { id: this.workspaceId },
-            select: { emailConfig: true, smsConfig: true },
+            select: { emailConfig: true, smsConfig: true, name: true },
         });
         return workspace;
     }
@@ -91,7 +91,11 @@ export class CommunicationService {
         // --- Send via Gmail SMTP (Nodemailer) ---
         const smtpUser = process.env.SMTP_USER;
         const smtpPass = process.env.SMTP_PASS;
-        const fromName = process.env.SMTP_FROM_NAME || "CareOps";
+        const platformName = process.env.SMTP_FROM_NAME || "CareOps";
+        const businessName = config?.name;
+
+        // Build sender name: "Kanso - BusinessName" or just "Kanso" if no business name
+        const fromName = businessName ? `${platformName} - ${businessName}` : platformName;
 
         // Allow workspace-level email config override
         let finalUser = smtpUser;
