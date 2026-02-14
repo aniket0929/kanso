@@ -15,7 +15,7 @@ import {
     SelectTrigger, 
     SelectValue 
 } from "@/components/ui/select";
-import { submitContactForm } from "@/lib/actions/form.actions";
+import { submitFormResponse } from "@/lib/actions/form.actions";
 
 interface Field {
     id: string;
@@ -44,7 +44,7 @@ export function PublicFormClient({ form }: { form: any }) {
             // The existing submitContactForm takes (slug, data). 
             // We should use the workspace slug from the form.
             
-            await submitContactForm(form.workspace.slug, data);
+            await submitFormResponse(form.id, data);
             setSubmitted(true);
             toast.success("Submitted successfully");
         } catch (error) {

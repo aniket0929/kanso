@@ -112,3 +112,92 @@ export async function submitContactForm(slug: string, data: any) {
 
     return true;
 }
+
+export async function submitFormResponse(formId: string, data: any) {
+    try {
+        const form = await db.form.findUnique({
+            where: { id: formId },
+            include: { workspace: true }
+        });
+
+        if (!form) throw new Error("Form not found");
+
+        // 1. Try to find/create contact
+        // We look for common email/name field keys
+        const emailKey = Object.keys(data).find(k => k.toLowerCase().includes('email'));
+        const nameKey = Object.keys(data).find(k => k.toLowerCase().includes('name'));
+        const email = emailKey ? data[emailKey] : null;
+        const name = nameKey ? data[nameKey] : "Unknown Lead";
+
+        let contact = await db.contact.findFirst({
+            where: {
+                workspaceId: form.workspaceId,
+                ...(email ? { email } : { name })
+            }
+        });
+
+        if (!contact) {
+            contact = await db.contact.create({
+                data: {
+                    workspaceId: form.workspaceId,
+                    name: name,
+                    email: email,
+                    source: "form_submission"
+                }
+            });
+        }
+
+        // 2. Create the Form Submission
+        await db.formSubmission.create({
+            data: {
+                formId: form.id,
+                contactId: contact.id,
+                data: JSON.stringify(data),
+                status: "completed",
+                completedAt: new Date()
+            }
+        });
+
+        // 3. Create a Message in their conversation for visibility
+        let conversation = await db.conversation.findFirst({
+            where: { contactId: contact.id }
+        });
+
+        if (!conversation) {
+            conversation = await db.conversation.create({
+                data: {
+                    workspaceId: form.workspaceId,
+                    contactId: contact.id,
+                    status: "active",
+                    subject: `Submission: ${form.name}`
+                }
+            });
+        }
+
+        await db.message.create({
+            data: {
+                conversationId: conversation.id,
+                channel: "system",
+                direction: "inbound",
+                content: `New form submission: ${form.name}`,
+                senderType: "system",
+                status: "received"
+            }
+        });
+
+        // 4. Trigger Automation
+        const engine = new AutomationEngine(form.workspaceId);
+        await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
+            formName: form.name,
+            contactName: name,
+            contactEmail: email,
+            submissionData: data
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit form:", error);
+        throw error;
+    }
+}
+

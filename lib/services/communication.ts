@@ -68,27 +68,36 @@ export class CommunicationService {
         }
 
         // Real integration (Resend)
+        const resendApiKey = process.env.RESEND_API_KEY;
+        let finalApiKey = resendApiKey;
+        let fromEmail = 'CareOps <onboarding@resend.dev>'; // Default Resend testing email
+
         if (config?.emailConfig) {
             try {
-                const { apiKey } = JSON.parse(config.emailConfig);
-                const resendApiKey = apiKey || process.env.RESEND_API_KEY; // Fallback to env
-
-                if (resendApiKey) {
-                    // Initialize Resend
-                    const resend = new (require("resend").Resend)(resendApiKey);
-
-                    await resend.emails.send({
-                        from: 'CareOps <notifications@careops.com>', // Verify this domain in Resend!
-                        to: options.to,
-                        reply_to: options.replyTo,
-                        subject: options.subject,
-                        html: options.html
-                    });
-
-                    console.log(`[Email Service] Sent via Resend to ${options.to}`);
-                }
+                const parsed = JSON.parse(config.emailConfig);
+                if (parsed.apiKey) finalApiKey = parsed.apiKey;
+                if (parsed.fromEmail) fromEmail = parsed.fromEmail;
             } catch (e) {
                 console.error("[Email Service] Failed to parse email config", e);
+            }
+        }
+
+        if (finalApiKey) {
+            try {
+                // Initialize Resend
+                const resend = new (require("resend").Resend)(finalApiKey);
+
+                await resend.emails.send({
+                    from: fromEmail,
+                    to: options.to,
+                    reply_to: options.replyTo,
+                    subject: options.subject,
+                    html: options.html
+                });
+
+                console.log(`[Email Service] Sent via Resend to ${options.to}`);
+            } catch (error) {
+                console.error("[Email Service] Resend Error:", error);
             }
         }
 
@@ -133,16 +142,28 @@ export class CommunicationService {
         }
 
         // Real integration (Twilio)
+        const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+        const twilioAuth = process.env.TWILIO_AUTH_TOKEN;
+        const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
+
+        let finalSid = twilioSid;
+        let finalAuth = twilioAuth;
+        let finalFrom = twilioFrom;
+
         if (config?.smsConfig) {
             try {
-                const { accountSid, authToken, phoneNumber } = JSON.parse(config!.smsConfig!);
-                if (accountSid && authToken) {
-                    // In a real app, you'd use the Twilio client here.
-                    console.log(`[SMS Service] Simulating Twilio API call from ${phoneNumber}`);
-                }
+                const parsed = JSON.parse(config.smsConfig);
+                if (parsed.accountSid) finalSid = parsed.accountSid;
+                if (parsed.authToken) finalAuth = parsed.authToken;
+                if (parsed.phoneNumber) finalFrom = parsed.phoneNumber;
             } catch (e) {
                 console.error("[SMS Service] Failed to parse SMS config", e);
             }
+        }
+
+        if (finalSid && finalAuth && finalFrom) {
+            // Simulation for now or use twilio package
+            console.log(`[SMS Service] To: ${options.to} | From: ${finalFrom} | Body: ${options.body}`);
         }
 
         return true;

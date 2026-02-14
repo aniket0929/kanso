@@ -89,14 +89,14 @@ export class AutomationEngine {
             });
 
             // 2. Trigger Post-Booking Follow-up Form
-            // In a real app, this might be delayed by 1 minute or sent immediately
+            const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
             await this.comms.sendEmail({
                 to: contact.email,
                 subject: "Important: Please complete your intake form",
                 html: `
                     <p>Hi ${contact.name},</p>
                     <p>To prepare for your visit, please fill out this additional information form:</p>
-                    <p><a href="/forms/intake?b=${payload.bookingId}" style="padding: 10px 20px; background: #6366f1; color: white; text-decoration: none; border-radius: 5px;">Complete Form</a></p>
+                    <p><a href="${baseUrl}/forms/intake?b=${payload.bookingId}" style="padding: 10px 20px; background: #000000; color: white; text-decoration: none; border-radius: 99px; font-weight: bold;">Complete Form</a></p>
                 `
             });
         }
@@ -111,14 +111,23 @@ export class AutomationEngine {
     }
 
     private async handleFormSubmitted(payload: any) {
-        // payload: { email: string, name: string, message: string }
-        const { email, name } = payload;
+        // payload: { email: string, name: string, message: string } or { contactEmail, contactName }
+        const email = payload.email || payload.contactEmail;
+        const name = payload.name || payload.contactName || "Customer";
 
         if (email) {
             await this.comms.sendEmail({
                 to: email,
                 subject: "We received your message",
-                html: `<p>Hi ${name},</p><p>Thanks for reaching out! We have received your message and will get back to you shortly.</p><p><em>- The CareOps Team</em></p>`
+                html: `
+                    <div style="font-family: serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                        <h2 style="font-size: 24px;">Thank you for reaching out.</h2>
+                        <p>Hi ${name},</p>
+                        <p>Your response has been securely recorded. Our team will review the information and get back to you shortly.</p>
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                        <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px;">Powered by Kanso</p>
+                    </div>
+                `
             });
         }
     }
