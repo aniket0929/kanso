@@ -14,7 +14,7 @@ graph TD
         O[Onboarding Wizard]
     end
 
-    subgraph Server ["Server Layer (Next.js 15)"]
+    subgraph Server ["Server Layer (Next.js 16)"]
         SA[Server Actions]
         API[Webhooks & API Routes]
         Middleware[Auth & Guard Middleware]
@@ -22,7 +22,7 @@ graph TD
 
     subgraph Services ["External Services"]
         Clerk[Clerk Auth]
-        Resend[Resend Email]
+        Gmail[Gmail SMTP / Nodemailer]
         Twilio[Twilio SMS]
         Neon[PostgreSQL Database]
     end
@@ -31,7 +31,7 @@ graph TD
     Middleware --> SA
     SA --> Neon
     SA --> Clerk
-    SA --> Resend
+    SA --> Gmail
     SA --> Twilio
     API --> Neon
 ```

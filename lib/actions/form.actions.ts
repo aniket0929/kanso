@@ -107,7 +107,9 @@ export async function submitContactForm(slug: string, data: any) {
     await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
         email: data.email,
         name: data.name,
-        message: data.message
+        message: data.message,
+        workspaceSlug: workspace.slug,
+        workspaceName: workspace.name
     });
 
     return true;
@@ -197,6 +199,8 @@ export async function submitFormResponse(formId: string, data: any) {
             formName: form.name,
             contactName: name,
             contactEmail: email,
+            workspaceSlug: form.workspace.slug,
+            workspaceName: form.workspace.name,
             submissionData: data
         });
 

@@ -115,21 +115,41 @@ export class AutomationEngine {
     }
 
     private async handleFormSubmitted(payload: any) {
-        // payload: { email: string, name: string, message: string } or { contactEmail, contactName }
+        // payload: { email, name, message, workspaceSlug, workspaceName } or { contactEmail, contactName, ... }
         const email = payload.email || payload.contactEmail;
-        const name = payload.name || payload.contactName || "Customer";
+        const name = payload.name || payload.contactName || "there";
+        const workspaceName = payload.workspaceName || "our team";
+        const workspaceSlug = payload.workspaceSlug;
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        const bookingUrl = workspaceSlug ? `${baseUrl}/${workspaceSlug}/book` : null;
 
         if (email) {
             await this.comms.sendEmail({
                 to: email,
-                subject: "We received your message",
+                subject: `Welcome — ${workspaceName} is glad to have you!`,
                 html: `
-                    <div style="font-family: serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                        <h2 style="font-size: 24px;">Thank you for reaching out.</h2>
-                        <p>Hi ${name},</p>
-                        <p>Your response has been securely recorded. Our team will review the information and get back to you shortly.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-                        <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 1px;">Powered by Kanso</p>
+                    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px 24px; color: #1a1a1a;">
+                        <h2 style="font-size: 22px; font-weight: 600; margin-bottom: 16px;">Welcome, ${name}!</h2>
+                        <p style="font-size: 15px; line-height: 1.6; color: #333;">
+                            Thank you for reaching out to <strong>${workspaceName}</strong>. Your message has been received and our team will review it shortly.
+                        </p>
+                        <p style="font-size: 15px; line-height: 1.6; color: #333;">
+                            In the meantime, would you like to schedule a consultation? We'd love to learn more about how we can help you.
+                        </p>
+                        ${bookingUrl ? `
+                        <div style="text-align: center; margin: 28px 0;">
+                            <a href="${bookingUrl}" style="display: inline-block; padding: 12px 28px; background: #000; color: #fff; text-decoration: none; border-radius: 99px; font-size: 14px; font-weight: 600; letter-spacing: 0.3px;">Book a Consultation →</a>
+                        </div>
+                        ` : ''}
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+                        <p style="font-size: 15px; line-height: 1.6; color: #333;">
+                            We look forward to connecting with you.
+                        </p>
+                        <p style="font-size: 15px; color: #333;">
+                            Warm regards,<br/>
+                            <strong>The ${workspaceName} Team</strong>
+                        </p>
+                        <p style="font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-top: 32px;">Powered by Kanso</p>
                     </div>
                 `
             });
