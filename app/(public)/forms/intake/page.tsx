@@ -9,8 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Loader2 } from "lucide-react";
-
 import { Suspense } from "react";
+import { submitIntakeResponse } from "@/lib/actions/form.actions";
 
 function IntakeFormContent() {
     const searchParams = useSearchParams();
@@ -20,15 +20,24 @@ function IntakeFormContent() {
 
     if (!bookingId) return <div className="p-20 text-center text-zinc-500">Invalid Link.</div>;
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate form submission logic
-        setTimeout(() => {
-            setLoading(false);
+
+        try {
+            const formData = new FormData(e.currentTarget);
+            const data = Object.fromEntries(formData.entries());
+            
+            await submitIntakeResponse(bookingId, data);
+            
             setSubmitted(true);
             toast.success("Thank you! Information received.");
-        }, 1500);
+        } catch (error) {
+            toast.error("Failed to submit. Please try again.");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (submitted) {
@@ -74,6 +83,7 @@ function IntakeFormContent() {
                                 <Label htmlFor="history">Medical History / Concerns</Label>
                                 <Textarea 
                                     id="history" 
+                                    name="medical_history"
                                     placeholder="Please describe any pre-existing conditions..." 
                                     className="h-32 bg-black/20"
                                 />
@@ -82,11 +92,11 @@ function IntakeFormContent() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="insurance">Insurance Provider</Label>
-                                    <Input id="insurance" placeholder="Blue Cross / Private" className="bg-white border-border/50" />
+                                    <Input id="insurance" name="insurance_provider" placeholder="Blue Cross / Private" className="bg-white border-border/50" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="policy">Policy Number</Label>
-                                    <Input id="policy" placeholder="XYZ-123456" className="bg-white border-border/50" />
+                                    <Input id="policy" name="policy_number" placeholder="XYZ-123456" className="bg-white border-border/50" />
                                 </div>
                             </div>
 

@@ -172,6 +172,12 @@ export async function submitFormResponse(formId: string, data: any) {
                     subject: `Submission: ${form.name}`
                 }
             });
+        } else {
+            // Update timestamp
+            await db.conversation.update({
+                where: { id: conversation.id },
+                data: { updatedAt: new Date() }
+            });
         }
 
         await db.message.create({
@@ -197,6 +203,85 @@ export async function submitFormResponse(formId: string, data: any) {
         return { success: true };
     } catch (error) {
         console.error("Failed to submit form:", error);
+        throw error;
+    }
+}
+
+export async function submitIntakeResponse(bookingId: string, data: any) {
+    try {
+        const booking = await db.booking.findUnique({
+            where: { id: bookingId },
+            include: {
+                contact: true,
+                service: true,
+                workspace: true
+            }
+        });
+
+        if (!booking) throw new Error("Booking not found");
+
+        // 1. Create a Form Submission for this booking
+        // We find the first form linked to this service, or use a "General Intake" label
+        const formLink = await db.formServiceLink.findFirst({
+            where: { serviceId: booking.serviceId },
+            include: { form: true }
+        });
+
+        await db.formSubmission.create({
+            data: {
+                formId: formLink?.formId || "general_intake", // Fallback if no specific form linked
+                contactId: booking.contactId,
+                bookingId: booking.id,
+                data: JSON.stringify(data),
+                status: "completed",
+                completedAt: new Date()
+            }
+        });
+
+        // 2. Mark booking as completed
+        await db.booking.update({
+            where: { id: bookingId },
+            data: { formsCompleted: true }
+        });
+
+        // 3. Create a Message in their conversation for visibility
+        let conversation = await db.conversation.findFirst({
+            where: { contactId: booking.contactId }
+        });
+
+        if (!conversation) {
+            conversation = await db.conversation.create({
+                data: {
+                    workspaceId: booking.workspaceId,
+                    contactId: booking.contactId,
+                    status: "active",
+                    subject: `Intake: ${booking.service.name}`
+                }
+            });
+        }
+
+        await db.message.create({
+            data: {
+                conversationId: conversation.id,
+                channel: "system",
+                direction: "inbound",
+                content: `Patient completed intake form for ${booking.service.name}.`,
+                senderType: "system",
+                status: "received"
+            }
+        });
+
+        // 4. Trigger Automation (Thank you email)
+        const engine = new AutomationEngine(booking.workspaceId);
+        await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
+            contactEmail: booking.contact.email,
+            contactName: booking.contact.name,
+            formName: "Clinical Intake"
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to submit intake:", error);
         throw error;
     }
 }

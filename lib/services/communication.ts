@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Resend } from "resend";
 
 interface EmailOptions {
     to: string;
@@ -48,7 +49,7 @@ export class CommunicationService {
                     data: {
                         workspaceId: this.workspaceId,
                         contactId: contact.id,
-                        status: "open",
+                        status: "active",
                         subject: options.subject
                     }
                 });
@@ -64,6 +65,11 @@ export class CommunicationService {
                     senderName: "CareOps AI",
                     status: "sent"
                 }
+            });
+
+            await db.conversation.update({
+                where: { id: conversation!.id },
+                data: { updatedAt: new Date() }
             });
         }
 
@@ -84,20 +90,23 @@ export class CommunicationService {
 
         if (finalApiKey) {
             try {
-                // Initialize Resend
-                const resend = new (require("resend").Resend)(finalApiKey);
+                const resend = new Resend(finalApiKey);
 
-                await resend.emails.send({
+                const { data, error } = await resend.emails.send({
                     from: fromEmail,
                     to: options.to,
-                    reply_to: options.replyTo,
+                    replyTo: options.replyTo,
                     subject: options.subject,
                     html: options.html
                 });
 
-                console.log(`[Email Service] Sent via Resend to ${options.to}`);
+                if (error) {
+                    console.error("[Email Service] Resend API Error:", error);
+                } else {
+                    console.log(`[Email Service] Sent via Resend: ${data?.id}`);
+                }
             } catch (error) {
-                console.error("[Email Service] Resend Error:", error);
+                console.error("[Email Service] Execution Error:", error);
             }
         }
 
@@ -122,7 +131,7 @@ export class CommunicationService {
                     data: {
                         workspaceId: this.workspaceId,
                         contactId: contact.id,
-                        status: "open",
+                        status: "active",
                         subject: "SMS Conversation"
                     }
                 });
