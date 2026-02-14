@@ -104,14 +104,14 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="space-y-8">
             <FormField
             control={form.control}
             name="serviceId"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Service</FormLabel>
+                <FormLabel className="font-bold">Service</FormLabel>
                 <Select 
                     onValueChange={(val) => {
                         field.onChange(val);
@@ -142,7 +142,7 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             name="date"
             render={({ field }) => (
                 <FormItem className="flex flex-col">
-                <FormLabel className="mt-2 text-primary/80">Appointment Date</FormLabel>
+                <FormLabel className="font-bold">Appointment Date</FormLabel>
                 <Popover>
                     <PopoverTrigger asChild>
                     <FormControl>
@@ -189,7 +189,7 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             name="time"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Time Slot</FormLabel>
+                <FormLabel className="font-bold">Time Slot</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value} disabled={fetchingSlots || !form.getValues("date")}>
                     <FormControl>
                     <SelectTrigger>
@@ -213,13 +213,13 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/50">
+        <div className="space-y-8 pt-6 border-t">
             <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Client Name</FormLabel>
+                <FormLabel className="font-bold">Client Name</FormLabel>
                 <FormControl>
                     <Input placeholder="John Doe" {...field} />
                 </FormControl>
@@ -232,7 +232,7 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             name="email"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Client Email</FormLabel>
+                <FormLabel className="font-bold">Client Email</FormLabel>
                 <FormControl>
                     <Input placeholder="john@example.com" {...field} />
                 </FormControl>
@@ -247,7 +247,7 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             name="phone"
             render={({ field }) => (
                 <FormItem>
-                <FormLabel>Client Phone (Optional)</FormLabel>
+                <FormLabel className="font-bold">Client Phone (Optional)</FormLabel>
                 <FormControl>
                     <Input placeholder="+1 234 567 890" {...field} />
                 </FormControl>
@@ -256,7 +256,7 @@ export function ManualBookingForm({ services }: ManualBookingFormProps) {
             )}
         />
 
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button type="submit" className="w-full font-bold" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Confirm Booking
         </Button>

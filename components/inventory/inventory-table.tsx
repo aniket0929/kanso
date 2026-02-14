@@ -68,7 +68,7 @@ export function InventoryTable({ items, workspaceId }: InventoryTableProps) {
               <TableCell>
                 <div className="flex flex-col">
                     <span>{item.currentStock} {item.unit}</span>
-                    <span className="text-[10px] text-muted-foreground text-italic">Threshold: {item.lowStockThreshold}</span>
+                    <span className="text-md text-muted-foreground text-italic">Threshold: {item.lowStockThreshold}</span>
                 </div>
               </TableCell>
               <TableCell>

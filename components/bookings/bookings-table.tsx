@@ -83,12 +83,12 @@ export function BookingsTable({ initialBookings }: BookingsTableProps) {
             <TableRow key={booking.id}>
               <TableCell className="font-medium">
                 <div>{booking.contact.name}</div>
-                <div className="text-xs text-muted-foreground">{booking.contact.email || booking.contact.phone}</div>
+                <div className="text-sm text-muted-foreground">{booking.contact.email || booking.contact.phone}</div>
               </TableCell>
               <TableCell>{booking.service.name}</TableCell>
               <TableCell>
                 <div>{format(new Date(booking.scheduledAt), "MMM d, yyyy")}</div>
-                <div className="text-xs text-muted-foreground">{format(new Date(booking.scheduledAt), "h:mm a")}</div>
+                <div className="text-sm text-muted-foreground">{format(new Date(booking.scheduledAt), "h:mm a")}</div>
               </TableCell>
               <TableCell>
                 <Badge className={getStatusColor(booking.status)} variant="outline">

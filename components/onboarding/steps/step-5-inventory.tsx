@@ -53,7 +53,7 @@ export function Step5Inventory({ onNext, workspaceId }: { onNext: () => void; wo
             <Card key={field.id} className="bg-secondary/20 border-border/50 shadow-sm overflow-hidden group">
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-serif font-bold opacity-40 uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-md font-serif font-bold opacity-40 uppercase tracking-widest">
                     <Package className="h-4 w-4" />
                     Item {index + 1}
                   </div>
@@ -124,7 +124,7 @@ export function Step5Inventory({ onNext, workspaceId }: { onNext: () => void; wo
           onClick={() => append({ name: "", quantity: "10", threshold: "2" })}
         >
           <Plus className="h-6 w-6" />
-          <span className="font-serif font-bold uppercase text-xs tracking-widest opacity-60">Add Another Item</span>
+          <span className="font-serif font-bold uppercase text-sm tracking-widest opacity-60">Add Another Item</span>
         </Button>
 
         <div className="flex justify-end pt-8 border-t border-border/30">

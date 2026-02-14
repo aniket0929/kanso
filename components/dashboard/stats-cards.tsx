@@ -18,44 +18,44 @@ export function StatsCards({ stats }: DashboardStatsProps) {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Bookings Today</CardTitle>
+          <CardTitle className="text-md font-medium">Bookings Today</CardTitle>
           <Calendar className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.bookingsToday}</div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
              Total: {stats.bookingsTotal}
           </p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">New Leads</CardTitle>
+          <CardTitle className="text-md font-medium">New Leads</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.newLeads}</div>
-          <p className="text-xs text-muted-foreground">Last 7 days</p>
+          <p className="text-sm text-muted-foreground">Last 7 days</p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Unread Messages</CardTitle>
+          <CardTitle className="text-md font-medium">Unread Messages</CardTitle>
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.unreadConversations || 0}</div>
-          <p className="text-xs text-muted-foreground">Conversations waiting</p>
+          <p className="text-sm text-muted-foreground">Conversations waiting</p>
         </CardContent>
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Action Required</CardTitle>
+          <CardTitle className="text-md font-medium">Action Required</CardTitle>
           <AlertCircle className="h-4 w-4 text-rose-500" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.actionRequired}</div>
-          <p className="text-xs text-muted-foreground">Pending bookings</p>
+          <p className="text-sm text-muted-foreground">Pending bookings</p>
         </CardContent>
       </Card>
     </div>

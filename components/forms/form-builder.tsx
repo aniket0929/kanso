@@ -93,7 +93,7 @@ export function FormBuilder({ form }: { form: any }) {
                     </Button>
                     <div>
                         <h1 className="text-2xl font-bold">Edit Form</h1>
-                        <p className="text-sm text-muted-foreground">Design your custom form fields</p>
+                        <p className="text-md text-muted-foreground">Design your custom form fields</p>
                     </div>
                 </div>
                 <Button onClick={handleSave} disabled={saving} className="gap-2">
@@ -144,16 +144,16 @@ export function FormBuilder({ form }: { form: any }) {
                                         <div className="flex-1 space-y-4">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Field Label</Label>
+                                                    <Label className="text-md uppercase tracking-wider text-muted-foreground">Field Label</Label>
                                                     <Input 
                                                         value={field.label}
                                                         onChange={(e) => updateField(field.id, { label: e.target.value })}
-                                                        className="h-8 text-sm"
+                                                        className="h-8 text-md"
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">Type</Label>
-                                                    <div className="flex items-center gap-2 h-8 text-sm px-3 bg-muted/50 rounded-md border text-muted-foreground capitalize">
+                                                    <Label className="text-md uppercase tracking-wider text-muted-foreground">Type</Label>
+                                                    <div className="flex items-center gap-2 h-8 text-md px-3 bg-muted/50 rounded-md border text-muted-foreground capitalize">
                                                         {field.type === 'text' && <Type className="h-3 w-3" />}
                                                         {field.type === 'email' && <Mail className="h-3 w-3" />}
                                                         {field.type === 'textarea' && <AlignLeft className="h-3 w-3" />}
@@ -169,7 +169,7 @@ export function FormBuilder({ form }: { form: any }) {
                                                         checked={field.required}
                                                         onCheckedChange={(checked) => updateField(field.id, { required: !!checked })}
                                                     />
-                                                    <Label htmlFor={`req-${field.id}`} className="text-xs">Required</Label>
+                                                    <Label htmlFor={`req-${field.id}`} className="text-sm">Required</Label>
                                                 </div>
                                             </div>
                                         </div>
@@ -189,7 +189,7 @@ export function FormBuilder({ form }: { form: any }) {
                         ))}
 
                         {fields.length === 0 && (
-                            <div className="h-32 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-sm italic">
+                            <div className="h-32 rounded-lg border border-dashed flex items-center justify-center text-muted-foreground text-md italic">
                                 No fields added yet. Choose a field type on the right.
                             </div>
                         )}

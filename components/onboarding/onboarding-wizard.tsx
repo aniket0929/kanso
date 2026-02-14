@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Step1Workspace } from "@/components/onboarding/steps/step-1-workspace";
@@ -14,6 +14,11 @@ import { Step6Completion } from "@/components/onboarding/steps/step-6-completion
 export function OnboardingWizard() {
   const [step, setStep] = useState(1);
   const [workspaceId, setWorkspaceId] = useState<string | undefined>();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const next = () => setStep((s) => Math.min(6, s + 1));
   const back = () => setStep((s) => Math.max(1, s - 1));
@@ -22,6 +27,10 @@ export function OnboardingWizard() {
     setWorkspaceId(id);
     next();
   };
+
+  if (!isMounted) {
+    return null; // or a loading skeleton
+  }
 
   return (
     <Card className="w-full border-border/50 bg-card shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-2xl overflow-hidden selection:bg-black selection:text-white">

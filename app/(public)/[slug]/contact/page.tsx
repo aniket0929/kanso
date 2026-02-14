@@ -14,7 +14,7 @@ export default async function PublicContactPage({ params }: { params: Promise<{ 
     <div className="space-y-12 py-12 selection:bg-black selection:text-white">
       <div className="text-center space-y-4">
         <h1 className="text-5xl font-bold font-serif tracking-tight">{workspace.name}</h1>
-        <p className="text-muted-foreground italic font-medium uppercase tracking-widest text-xs">Contact Us</p>
+        <p className="text-muted-foreground italic font-medium uppercase tracking-widest text-sm">Contact Us</p>
       </div>
       <ContactForm slug={slug} />
     </div>

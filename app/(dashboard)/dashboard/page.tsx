@@ -10,28 +10,30 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground">Overview of your business operations.</p>
+      <div className="space-y-3">
+        <h1>Dashboard</h1>
+        <p className="text-muted-foreground text-lg">
+          Real-time overview of your clinical operations and patient engagement.
+        </p>
       </div>
       <Separator />
       
       <StatsCards stats={stats} />
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4 rounded-xl border bg-card text-card-foreground shadow">
-            <div className="p-6">
-                <h3 className="font-semibold leading-none tracking-tight">Recent Bookings</h3>
-                <p className="text-sm text-muted-foreground pt-2">Latest 10 appointments.</p>
+            <div className="p-6 space-y-2">
+                <h3>Recent Bookings</h3>
+                <p className="text-md text-muted-foreground">Your latest 10 scheduled appointments.</p>
             </div>
             <div className="p-6 pt-0 min-h-[400px]">
                 <RecentBookings bookings={stats.recentBookings} />
             </div>
         </div>
         <div className="col-span-3 rounded-xl border bg-card text-card-foreground shadow flex flex-col">
-            <div className="p-6">
-                <h3 className="font-semibold leading-none tracking-tight">Live Inbox</h3>
-                <p className="text-sm text-muted-foreground pt-2">Recent unread or active threads.</p>
+            <div className="p-6 space-y-2">
+                <h3>Live Inbox</h3>
+                <p className="text-md text-muted-foreground">Recent unread or active conversations.</p>
             </div>
             <div className="p-6 pt-0 flex-1">
                 <RecentInbox conversations={stats.recentInbox} />

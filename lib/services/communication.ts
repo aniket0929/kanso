@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 interface EmailOptions {
     to: string;
@@ -28,13 +28,28 @@ export class CommunicationService {
         return workspace;
     }
 
+    private createTransporter() {
+        const user = process.env.SMTP_USER;
+        const pass = process.env.SMTP_PASS;
+
+        if (!user || !pass) {
+            console.error("[Email Service] SMTP_USER or SMTP_PASS not set in environment variables.");
+            return null;
+        }
+
+        return nodemailer.createTransport({
+            service: "gmail",
+            auth: { user, pass },
+        });
+    }
+
     async sendEmail(options: EmailOptions) {
         const config = await this.getConfigs();
 
         // Log the attempt
         console.log(`[Email Service] To: ${options.to} | Subject: ${options.subject}`);
 
-        // Create a conversation/message record
+        // Create a conversation/message record in the database
         const contact = await db.contact.findFirst({
             where: { workspaceId: this.workspaceId, email: options.to }
         });
@@ -73,44 +88,57 @@ export class CommunicationService {
             });
         }
 
-        // Real integration (Resend)
-        const resendApiKey = process.env.RESEND_API_KEY;
-        let finalApiKey = resendApiKey;
-        let fromEmail = 'CareOps <onboarding@resend.dev>'; // Default Resend testing email
+        // --- Send via Gmail SMTP (Nodemailer) ---
+        const smtpUser = process.env.SMTP_USER;
+        const smtpPass = process.env.SMTP_PASS;
+        const fromName = process.env.SMTP_FROM_NAME || "CareOps";
+
+        // Allow workspace-level email config override
+        let finalUser = smtpUser;
+        let finalPass = smtpPass;
+        let finalFromName = fromName;
 
         if (config?.emailConfig) {
             try {
                 const parsed = JSON.parse(config.emailConfig);
-                if (parsed.apiKey) finalApiKey = parsed.apiKey;
-                if (parsed.fromEmail) fromEmail = parsed.fromEmail;
+                if (parsed.smtpUser) finalUser = parsed.smtpUser;
+                if (parsed.smtpPass) finalPass = parsed.smtpPass;
+                if (parsed.fromName) finalFromName = parsed.fromName;
             } catch (e) {
                 console.error("[Email Service] Failed to parse email config", e);
             }
         }
 
-        if (finalApiKey) {
-            try {
-                const resend = new Resend(finalApiKey);
-
-                const { data, error } = await resend.emails.send({
-                    from: fromEmail,
-                    to: options.to,
-                    replyTo: options.replyTo,
-                    subject: options.subject,
-                    html: options.html
-                });
-
-                if (error) {
-                    console.error("[Email Service] Resend API Error:", error);
-                } else {
-                    console.log(`[Email Service] Sent via Resend: ${data?.id}`);
-                }
-            } catch (error) {
-                console.error("[Email Service] Execution Error:", error);
-            }
+        if (!finalUser || !finalPass) {
+            console.error("[Email Service] SMTP credentials not configured. Email NOT sent to:", options.to);
+            return false;
         }
 
-        return true;
+        try {
+            const transporter = nodemailer.createTransport({
+                service: "gmail",
+                auth: {
+                    user: finalUser,
+                    pass: finalPass,
+                },
+            });
+
+            console.log(`[Email Service] Sending via Gmail SMTP from: ${finalUser} to: ${options.to}`);
+
+            const info = await transporter.sendMail({
+                from: `${finalFromName} <${finalUser}>`,
+                to: options.to,
+                replyTo: options.replyTo || finalUser,
+                subject: options.subject,
+                html: options.html,
+            });
+
+            console.log(`[Email Service] ✅ Email sent successfully. Message ID: ${info.messageId}`);
+            return true;
+        } catch (error) {
+            console.error("[Email Service] ❌ Failed to send email:", error);
+            return false;
+        }
     }
 
     async sendSms(options: SmsOptions) {

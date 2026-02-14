@@ -150,7 +150,7 @@ export function AddItemDialog({ workspaceId, item, children }: AddItemDialogProp
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  <div className="text-[12px] text-muted-foreground">Alert me when stock falls below this.</div>
+                  <div className="text-md text-muted-foreground">Alert me when stock falls below this.</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -180,5 +180,5 @@ export function AddItemDialog({ workspaceId, item, children }: AddItemDialogProp
 }
 
 function FormDescription({ children }: { children: React.ReactNode }) {
-    return <p className="text-[12px] text-muted-foreground">{children}</p>;
+    return <p className="text-md text-muted-foreground">{children}</p>;
 }

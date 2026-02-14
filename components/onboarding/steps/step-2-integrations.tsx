@@ -75,7 +75,7 @@ export function Step2Integrations({ onNext, workspaceId }: { onNext: () => void;
                       <FormLabel className="text-lg font-serif font-bold cursor-pointer">
                         Email Notifications
                       </FormLabel>
-                      <p className="text-sm text-muted-foreground italic">
+                      <p className="text-md text-muted-foreground italic">
                         Send booking confirmations and reminders via email.
                       </p>
                     </div>
@@ -105,7 +105,7 @@ export function Step2Integrations({ onNext, workspaceId }: { onNext: () => void;
                       <FormLabel className="text-lg font-serif font-bold cursor-pointer">
                         SMS Notifications
                       </FormLabel>
-                      <p className="text-sm text-muted-foreground italic">
+                      <p className="text-md text-muted-foreground italic">
                         Instantly alert customers through SMS messages.
                       </p>
                     </div>

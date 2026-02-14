@@ -65,7 +65,7 @@ export function Step4Forms({ onNext, workspaceId }: { onNext: () => void; worksp
             </FormItem>
           )}
         />
-        <div className="p-4 bg-muted/20 rounded-lg text-sm text-muted-foreground">
+        <div className="p-4 bg-muted/20 rounded-lg text-md text-muted-foreground">
           <p>For this prototype, we will automatically add "Full Name" and "Notes" fields.</p>
         </div>
         <div className="flex justify-end pt-8">

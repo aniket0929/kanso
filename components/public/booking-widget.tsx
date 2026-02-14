@@ -88,7 +88,7 @@ export function BookingWidget({ workspace, services }: BookingWidgetProps) {
                             className="p-4 border rounded-lg cursor-pointer hover:bg-muted/50 transition flex justify-between items-center"
                         >
                             <span className="font-medium">{service.name}</span>
-                            <span className="text-sm text-muted-foreground flex items-center">
+                            <span className="text-md text-muted-foreground flex items-center">
                                 <Clock className="h-3 w-3 mr-1" /> {service.duration}m
                             </span>
                         </div>
@@ -113,10 +113,10 @@ export function BookingWidget({ workspace, services }: BookingWidgetProps) {
                         disabled={(date) => date < new Date(new Date().setHours(0,0,0,0))}
                     />
                     <div className="flex-1">
-                        <h3 className="text-sm font-medium mb-3">Available Slots</h3>
+                        <h3 className="text-md font-medium mb-3">Available Slots</h3>
                         <div className="min-h-[300px]">
                             {loadingSlots ? (
-                                <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">
+                                <div className="flex items-center justify-center h-40 text-muted-foreground text-md">
                                     Loading slots...
                                 </div>
                             ) : slots.length > 0 ? (
@@ -142,7 +142,7 @@ export function BookingWidget({ workspace, services }: BookingWidgetProps) {
                                     </SelectContent>
                                 </Select>
                             ) : (
-                                <div className="flex items-center justify-center h-40 text-muted-foreground text-sm">
+                                <div className="flex items-center justify-center h-40 text-muted-foreground text-md">
                                     No slots available for this date.
                                 </div>
                             )}

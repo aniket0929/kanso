@@ -109,7 +109,7 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                 <button
                     onClick={() => handleFilterChange("all")}
                     className={cn(
-                        "flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
+                        "flex-1 text-sm font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
                         filter === "all" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:bg-background/50"
                     )}
                 >
@@ -119,7 +119,7 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                 <button
                     onClick={() => handleFilterChange("email")}
                     className={cn(
-                        "flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
+                        "flex-1 text-sm font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
                         filter === "email" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:bg-background/50"
                     )}
                 >
@@ -129,7 +129,7 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                 <button
                     onClick={() => handleFilterChange("sms")}
                     className={cn(
-                        "flex-1 text-xs font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
+                        "flex-1 text-sm font-medium py-1.5 px-2 rounded-md transition-all flex items-center justify-center gap-1.5",
                         filter === "sms" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:bg-background/50"
                     )}
                 >
@@ -140,7 +140,7 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
         </div>
         <ScrollArea className="flex-1">
             {loadingConversations ? (
-                 <div className="p-8 text-center text-muted-foreground text-sm space-y-2">
+                 <div className="p-8 text-center text-muted-foreground text-md space-y-2">
                     <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mx-auto" />
                     <p>Loading...</p>
                  </div>
@@ -161,18 +161,18 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                         <div className="flex-1 overflow-hidden">
                             <div className="flex justify-between items-center mb-1">
                                 <span className="font-medium truncate">{conv.contact.name}</span>
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-sm text-muted-foreground">
                                     {formatDistanceToNow(new Date(conv.updatedAt))}
                                 </span>
                             </div>
-                            <p className="text-xs text-muted-foreground truncate">
+                            <p className="text-sm text-muted-foreground truncate">
                                 {conv.messages[0]?.content.replace(/<[^>]*>?/gm, '') || "No messages"}
                             </p>
                         </div>
                     </div>
                 ))}
                 {conversations.length === 0 && (
-                    <div className="p-8 text-center text-muted-foreground text-sm">
+                    <div className="p-8 text-center text-muted-foreground text-md">
                         No {filter === 'all' ? '' : filter} conversations found.
                     </div>
                 )}
@@ -188,20 +188,20 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                 <div className="p-4 border-b flex justify-between items-center">
                     <div>
                         <h3 className="font-semibold">{selectedConversation.contact.name}</h3>
-                        <p className="text-xs text-muted-foreground">{selectedConversation.subject || "No Subject"}</p>
+                        <p className="text-sm text-muted-foreground">{selectedConversation.subject || "No Subject"}</p>
                     </div>
                 </div>
                 
                 <ScrollArea className="flex-1 p-4">
                     <div className="space-y-4">
                         {loadingMessages ? (
-                            <div className="text-center text-sm text-muted-foreground p-4">Loading messages...</div>
+                            <div className="text-center text-md text-muted-foreground p-4">Loading messages...</div>
                         ) : (
                             messages.map((msg) => (
                                 <div
                                     key={msg.id}
                                     className={cn(
-                                        "flex flex-col max-w-[80%] rounded-lg p-3 text-sm",
+                                        "flex flex-col max-w-[80%] rounded-lg p-3 text-md",
                                         msg.direction === "outbound" 
                                             ? "ml-auto bg-primary text-primary-foreground" 
                                             : "mr-auto bg-muted border"
@@ -211,14 +211,14 @@ export function InboxClient({ initialConversations }: InboxClientProps) {
                                         dangerouslySetInnerHTML={{ __html: msg.content }} 
                                         className="prose prose-sm dark:prose-invert max-w-none"
                                     />
-                                    <span className="text-[10px] opacity-70 mt-1 self-end">
+                                    <span className="text-md opacity-70 mt-1 self-end">
                                         {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                     </span>
                                 </div>
                             ))
                         )}
                         {messages.length === 0 && !loadingMessages && (
-                            <div className="text-center text-sm text-muted-foreground">Start the conversation...</div>
+                            <div className="text-center text-md text-muted-foreground">Start the conversation...</div>
                         )}
                     </div>
                 </ScrollArea>

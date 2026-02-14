@@ -19,8 +19,9 @@ const config = {
         },
         extend: {
             fontFamily: {
-                sans: ["var(--font-dm-sans)", "sans-serif"],
-                serif: ["var(--font-playfair)", "serif"],
+                sans: ["var(--font-arimo)", "ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"],
+                serif: ["var(--font-arimo)", "ui-serif", "Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+                logo: ["ui-sans-serif", "system-ui", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"],
             },
         },
     },

@@ -35,67 +35,50 @@ export default async function SettingsPage() {
   if (!workspace) return null;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-        <p className="text-muted-foreground">Manage your workspace preferences.</p>
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <h1>Settings</h1>
+        <p className="text-muted-foreground text-lg">
+          Manage your workspace preferences and public booking information.
+        </p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-8">
         <Card>
-            <CardHeader>
-                <CardTitle>General Information</CardTitle>
-                <CardDescription>Update your business details visible to customers.</CardDescription>
+            <CardHeader className="space-y-3">
+                <h3>General Information</h3>
+                <p className="text-muted-foreground">
+                  Update your business details visible to customers on your public booking page.
+                </p>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="grid gap-2">
-                    <Label>Workspace Name</Label>
-                    <Input defaultValue={workspace.name} />
-                </div>
-                <div className="grid gap-2">
-                    <Label>Public Slug</Label>
-                    <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground text-sm">careops.com/</span>
-                        <Input defaultValue={workspace.slug} />
-                    </div>
+            <CardContent className="space-y-6">
+                <div className="grid gap-3">
+                    <Label className="text-md font-bold">Workspace Name</Label>
+                    <Input defaultValue={workspace.name} className="text-base" />
+                    <p className="text-sm text-muted-foreground">This name appears on all customer-facing materials.</p>
                 </div>
                 
-                <div className="grid gap-2">
-                    <Label>Public Booking URL</Label>
+                <div className="grid gap-3">
+                    <Label className="text-md font-bold">Public Slug</Label>
+                    <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground text-md font-medium">careops.com/</span>
+                        <Input defaultValue={workspace.slug} className="text-base" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">Choose a unique identifier for your booking page URL.</p>
+                </div>
+                
+                <div className="grid gap-3">
+                    <Label className="text-md font-bold">Public Booking URL</Label>
                     <div className="flex gap-2">
-                         <div className="flex-1 bg-muted p-2 rounded border border-input text-sm items-center flex text-muted-foreground truncate">
+                         <div className="flex-1 bg-muted p-3 rounded border border-input text-md items-center flex text-muted-foreground truncate font-medium">
                             {`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/${workspace.slug}/book`}
                         </div>
-                        {/* Improved copy button would go here */}
-                        <Button variant="secondary" size="sm">Copy</Button>
+                        <Button variant="secondary" size="sm" className="font-bold">Copy</Button>
                     </div>
-                    <p className="text-[11px] text-muted-foreground">Share this link with your customers.</p>
+                    <p className="text-sm text-muted-foreground">Share this link with your customers to allow them to book appointments.</p>
                 </div>
 
-                <Button>Save Changes</Button>
-            </CardContent>
-        </Card>
-
-        <Card>
-            <CardHeader>
-                <CardTitle>Integrations</CardTitle>
-                <CardDescription>Manage third-party connections.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                        <div className="font-medium">Resend (Email)</div>
-                        <div className="text-sm text-muted-foreground">Connected</div>
-                    </div>
-                    <Button variant="outline">Configure</Button>
-                </div>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                        <div className="font-medium">Twilio (SMS)</div>
-                        <div className="text-sm text-muted-foreground">Connected</div>
-                    </div>
-                    <Button variant="outline">Configure</Button>
-                </div>
+                <Button className="font-bold">Save Changes</Button>
             </CardContent>
         </Card>
       </div>

@@ -48,8 +48,8 @@ function IntakeFormContent() {
                         <div className="flex justify-center mb-4">
                             <CheckCircle2 className="h-16 w-16 text-black/20" />
                         </div>
-                        <CardTitle className="text-2xl font-serif">Information Received</CardTitle>
-                        <CardDescription>
+                        <CardTitle className="text-2xl font-extrabold tracking-tight">Information Received</CardTitle>
+                        <CardDescription className="font-medium">
                             Your details have been successfully linked to your booking. We'll see you soon!
                         </CardDescription>
                     </CardHeader>
@@ -59,13 +59,13 @@ function IntakeFormContent() {
     }
 
     return (
-        <div className="min-h-screen bg-white py-24 px-6 relative selection:bg-black selection:text-white">
+        <div className="min-h-screen bg-white py-[var(--section-gap)] px-[var(--side-padding)] relative selection:bg-black selection:text-white">
             <div className="max-w-2xl mx-auto space-y-12 relative z-10">
                 <div className="text-center space-y-4">
-                    <h1 className="text-5xl font-bold font-serif tracking-tight">
+                    <h1 className="text-5xl font-extrabold tracking-tight">
                         Pre-Visit Intake Form
                     </h1>
-                    <p className="text-muted-foreground italic text-sm">
+                    <p className="text-muted-foreground italic text-md">
                         Reference Booking ID: {bookingId}
                     </p>
                 </div>
@@ -101,10 +101,10 @@ function IntakeFormContent() {
                             </div>
 
                             <div className="p-6 rounded-xl bg-secondary border border-border/50 space-y-3">
-                                <p className="text-sm font-bold uppercase tracking-wider">Consent Agreement</p>
+                                <p className="text-md font-bold uppercase tracking-wider">Consent Agreement</p>
                                 <div className="flex items-start gap-3">
                                     <input type="checkbox" id="consent" required className="mt-1 accent-black" />
-                                    <label htmlFor="consent" className="text-xs text-muted-foreground leading-relaxed">
+                                    <label htmlFor="consent" className="text-sm text-muted-foreground leading-relaxed">
                                         I agree to the terms and conditions and understand that my information is stored securely in accordance with local health regulations.
                                     </label>
                                 </div>

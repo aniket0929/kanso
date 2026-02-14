@@ -16,7 +16,7 @@ interface RecentBookingsProps {
 export function RecentBookings({ bookings }: RecentBookingsProps) {
   if (bookings.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+      <div className="flex h-full items-center justify-center text-md text-muted-foreground">
         No recent bookings found.
       </div>
     );
@@ -37,10 +37,10 @@ export function RecentBookings({ bookings }: RecentBookingsProps) {
           <TableRow key={booking.id}>
             <TableCell>
               <div className="font-medium">{booking.contact.name}</div>
-              <div className="text-xs text-muted-foreground">{booking.contact.email}</div>
+              <div className="text-sm text-muted-foreground">{booking.contact.email}</div>
             </TableCell>
             <TableCell>{booking.service.name}</TableCell>
-            <TableCell className="text-xs">
+            <TableCell className="text-sm">
               {format(new Date(booking.scheduledAt), "MMM d, h:mm a")}
             </TableCell>
             <TableCell className="text-right">

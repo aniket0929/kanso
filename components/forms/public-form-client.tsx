@@ -79,7 +79,7 @@ export function PublicFormClient({ form }: { form: any }) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {fields.map((field) => (
                 <div key={field.id} className="space-y-2.5">
-                    <Label htmlFor={field.id} className="text-sm font-medium tracking-wide flex items-center gap-1">
+                    <Label htmlFor={field.id} className="text-md font-medium tracking-wide flex items-center gap-1">
                         {field.label}
                         {field.required && <span className="text-destructive font-bold">*</span>}
                     </Label>

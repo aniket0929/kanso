@@ -9,7 +9,7 @@ interface RecentInboxProps {
 export function RecentInbox({ conversations }: RecentInboxProps) {
   if (conversations.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+      <div className="flex h-full items-center justify-center text-md text-muted-foreground">
         No recent messages.
       </div>
     );
@@ -25,17 +25,17 @@ export function RecentInbox({ conversations }: RecentInboxProps) {
         >
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold text-sm truncate">{conv.contact.name}</span>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="font-semibold text-md truncate">{conv.contact.name}</span>
+              <span className="text-md text-muted-foreground">
                 {formatDistanceToNow(new Date(conv.lastMessageAt), { addSuffix: true })}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground line-clamp-1 truncate">
+            <p className="text-sm text-muted-foreground line-clamp-1 truncate">
               {conv.messages[0]?.content || "No messages yet"}
             </p>
           </div>
           {conv.unreadCount > 0 && (
-            <Badge variant="destructive" className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-[10px]">
+            <Badge variant="destructive" className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-md">
               {conv.unreadCount}
             </Badge>
           )}

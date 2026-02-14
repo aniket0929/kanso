@@ -34,9 +34,9 @@ export default async function ConnectPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="p-4 rounded-lg bg-black/20 border border-border/50 space-y-3">
-                            <p className="text-sm font-medium text-zinc-400">Your Webhook URL</p>
+                            <p className="text-md font-medium text-zinc-400">Your Webhook URL</p>
                             <div className="flex gap-2">
-                                <div className="flex-1 bg-black/40 p-2 rounded border border-border/50 font-mono text-xs truncate items-center flex">
+                                <div className="flex-1 bg-black/40 p-2 rounded border border-border/50 font-mono text-sm truncate items-center flex">
                                     {webhookUrl}
                                 </div>
                                 <CopyButton value={webhookUrl} />
@@ -44,7 +44,7 @@ export default async function ConnectPage() {
                         </div>
 
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-sm uppercase tracking-wider text-zinc-500">Quick Setup Guides</h3>
+                            <h3 className="font-semibold text-md uppercase tracking-wider text-zinc-500">Quick Setup Guides</h3>
                             
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <a 
@@ -56,7 +56,7 @@ export default async function ConnectPage() {
                                         <div className="font-medium">Google Forms</div>
                                         <ExternalLink className="h-4 w-4 text-zinc-600 group-hover:text-white transition" />
                                     </div>
-                                    <p className="text-xs text-zinc-500 leading-relaxed">
+                                    <p className="text-sm text-zinc-500 leading-relaxed">
                                         Use the "Webhooks for Forms" add-on to push submissions to CareOps instantly.
                                     </p>
                                 </a>
@@ -70,7 +70,7 @@ export default async function ConnectPage() {
                                         <div className="font-medium">Typeform</div>
                                         <ExternalLink className="h-4 w-4 text-zinc-600 group-hover:text-white transition" />
                                     </div>
-                                    <p className="text-xs text-zinc-500 leading-relaxed">
+                                    <p className="text-sm text-zinc-500 leading-relaxed">
                                         Go to Connect {'->'} Webhooks in your Typeform dashboard and paste your URL.
                                     </p>
                                 </a>
@@ -83,8 +83,8 @@ export default async function ConnectPage() {
                                     <MessageSquare className="h-4 w-4" />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-sm font-medium">Auto-Mapping</p>
-                                    <p className="text-xs text-zinc-500 leading-relaxed">
+                                    <p className="text-md font-medium">Auto-Mapping</p>
+                                    <p className="text-sm text-zinc-500 leading-relaxed">
                                         Our system automatically finds `email`, `name`, and `message` fields. 
                                         Ensure your form at least has an "Email" field.
                                     </p>
@@ -105,24 +105,24 @@ export default async function ConnectPage() {
                     <CardContent className="space-y-6">
                         <div className="space-y-4">
                             <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 shrink-0 font-bold text-xs border border-indigo-500/20">1</div>
+                                <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 shrink-0 font-bold text-sm border border-indigo-500/20">1</div>
                                 <div className="space-y-1">
-                                    <p className="text-sm font-medium">Capture</p>
-                                    <p className="text-xs text-zinc-500">Submission lands via Webhook.</p>
+                                    <p className="text-md font-medium">Capture</p>
+                                    <p className="text-sm text-zinc-500">Submission lands via Webhook.</p>
                                 </div>
                             </div>
                             <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 font-bold text-xs border border-purple-500/20">2</div>
+                                <div className="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500 shrink-0 font-bold text-sm border border-purple-500/20">2</div>
                                 <div className="space-y-1">
-                                    <p className="text-sm font-medium">Identify</p>
-                                    <p className="text-xs text-zinc-500">New Contact & Conversation created.</p>
+                                    <p className="text-md font-medium">Identify</p>
+                                    <p className="text-sm text-zinc-500">New Contact & Conversation created.</p>
                                 </div>
                             </div>
                             <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 font-bold text-xs border border-emerald-500/20">3</div>
+                                <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 font-bold text-sm border border-emerald-500/20">3</div>
                                 <div className="space-y-1">
-                                    <p className="text-sm font-medium">Respond</p>
-                                    <p className="text-xs text-zinc-500">Auto-reply sent instantly via AI.</p>
+                                    <p className="text-md font-medium">Respond</p>
+                                    <p className="text-sm text-zinc-500">Auto-reply sent instantly via AI.</p>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@ export default async function ConnectPage() {
                         <div className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10 space-y-2">
                             <div className="flex items-center gap-2 text-orange-500">
                                 <Mail className="h-4 w-4" />
-                                <span className="text-xs font-bold uppercase">Setup Required</span>
+                                <span className="text-sm font-bold uppercase">Setup Required</span>
                             </div>
                             <p className="text-[11px] text-zinc-500 leading-relaxed">
                                 Ensure your Resend/Twilio keys are set in <strong>Settings</strong> to enable automated responses.
