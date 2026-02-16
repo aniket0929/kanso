@@ -8,8 +8,8 @@ import { motion } from "framer-motion";
 export function FloatingNav() {
   const pathname = usePathname();
   
-  // Don't show on dashboard pages (they have their own nav)
-  if (pathname?.startsWith('/dashboard')) return null;
+  // Don't show on dashboard pages (they have their own nav) or form pages
+  if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/forms')) return null;
   
   return (
     <motion.div 
