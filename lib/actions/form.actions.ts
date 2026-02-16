@@ -194,6 +194,7 @@ export async function submitFormResponse(formId: string, data: any) {
         });
 
         // 4. Trigger Automation
+        console.log(`[Form Action] Triggering automation for ${form.name} by ${email}`);
         const engine = new AutomationEngine(form.workspaceId);
         await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
             formName: form.name,
@@ -280,7 +281,9 @@ export async function submitIntakeResponse(bookingId: string, data: any) {
         await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
             contactEmail: booking.contact.email,
             contactName: booking.contact.name,
-            formName: "Clinical Intake"
+            formName: "Clinical Intake",
+            workspaceSlug: booking.workspace.slug,
+            workspaceName: booking.workspace.name
         });
 
         return { success: true };

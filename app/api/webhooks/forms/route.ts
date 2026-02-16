@@ -87,7 +87,9 @@ export async function POST(req: Request) {
         await engine.trigger(AUTOMATION_EVENTS.FORM_SUBMITTED, {
             email: email,
             name: name,
-            message: message
+            message: message,
+            workspaceSlug: workspace.slug,
+            workspaceName: workspace.name
         });
 
         return NextResponse.json({ success: true, leadId: contact.id });
