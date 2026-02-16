@@ -126,9 +126,22 @@ export async function submitFormResponse(formId: string, data: any) {
 
         // 1. Try to find/create contact
         // We look for common email/name field keys
-        const emailKey = Object.keys(data).find(k => k.toLowerCase().includes('email'));
+        // 2. Identify Email Field
+        // Parse fields to find which one is the email type
+        const fields = typeof form.fields === 'string' ? JSON.parse(form.fields) : form.fields;
+        const emailField = Array.isArray(fields)
+            ? fields.find((f: any) => f.type === 'email' || f.label.toLowerCase().includes('email'))
+            : null;
+
+        let email = null;
+        if (emailField && data[emailField.id]) {
+            email = data[emailField.id];
+        } else {
+            // Fallback to searching keys if type lookup fails
+            const emailKey = Object.keys(data).find(k => k.toLowerCase().includes('email'));
+            email = emailKey ? data[emailKey] : null;
+        }
         const nameKey = Object.keys(data).find(k => k.toLowerCase().includes('name'));
-        const email = emailKey ? data[emailKey] : null;
         const name = nameKey ? data[nameKey] : "Unknown Lead";
 
         let contact = await db.contact.findFirst({
